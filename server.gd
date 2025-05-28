@@ -16,6 +16,7 @@ func pack_data(purpose, message):
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	var listen_signal = tserver.listen(port)
+	print("listening on %d" % port)
 	if listen_signal != OK:
 		print("something is wrong %d" % listen_signal)
 	pass
@@ -57,19 +58,24 @@ func _process(delta: float) -> void:
 					var new_id = randi_range(1000, 9999)
 					while room_list.find_key(new_id) != null:
 						new_id = randi_range(1000, 9999)
+					print("creating new room %d" % new_id)
 					
 					room_list[new_id] = {"host": connection_list[n], "settings": settings}
 					connection_list[n]["connector"].put_var(pack_data("host", new_id))
 				
 				elif incoming["purpose"] == "find":
 					var id = incoming["message"]
-					if room_list.find_key(id) != null:
+					print("looking for room %d" % id)
+					if room_list.has(id):
+						print("room found")
 						room_list[id]["guest"] = connection_list[n]
 						var host = room_list[id]["host"]
-						var host_name = connection_list[host]["name"]
+						var host_name = host["name"]
 						var settings = room_list[id]["settings"]
 						connection_list[n]["connector"].put_var(pack_data("match", {"opponent": host_name, "settings": settings}))
+						host["connector"].put_var(pack_data("match", {"opponent": host_name, "settings": settings}))
 					else:
+						print("room not found")
 						connection_list[n]["connector"].put_var(pack_data("failure", []))
 				
 				elif incoming["purpose"] == "play":
@@ -80,11 +86,13 @@ func _process(delta: float) -> void:
 					peer.put_var(pack_data("play", wager))
 				
 				elif incoming["purpose"] == "exit": # this is message when host quits looking for match
-					var room_id = incoming["message"]["room_id"]
+					var room_id = incoming["message"]
+					print("removing room %d" % room_id)
 					room_list.erase(room_id)
 				
 				elif incoming["purpose"] == "forfeit": # this guarentees there are two connections available (no i do not care about network issues)
 					var room_id = incoming["message"]["room_id"]
+					print("removing room %d" % room_id)
 					var host = room_list[room_id]["host"]
 					var guest = room_list[room_id]["guest"]
 					var ff_side = incoming["message"]["ff_side"]

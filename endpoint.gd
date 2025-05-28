@@ -21,16 +21,16 @@ func pack_data(purpose, message):
 # 								<- 							"play", wager
 # "close", room_id 				->
 
-func callout(name):
-	friendly_name = name
-	print("connecting to server")
-	socket.connect_to_url("ws://127.0.0.1:9876")
+func callout(u_name):
+	friendly_name = u_name
+	print("connecting to server at %s port %d" % [ip_address, port])
+	socket.connect_to_url("ws://"+ip_address+":"+str(port))
 	var state
 	while state != WebSocketPeer.STATE_CLOSED:
 		socket.poll()
 		state = socket.get_ready_state()
 		if state == WebSocketPeer.STATE_OPEN:
-			socket.put_var(pack_data("id", name))
+			socket.put_var(pack_data("id", u_name))
 			while socket.get_available_packet_count():
 				var listen = socket.get_var()
 				if listen["purpose"] == "ack":
@@ -42,27 +42,31 @@ func callout(name):
 
 # user control logic
 var thinking = 0
-var menu = preload("res://menu.tscn")
 
 func settings(c_mag, stamina):
 	socket.put_var(pack_data("host", {"c_mag": c_mag, "stamina": stamina}))
 	
-	court_size = c_mag
-	opponent_resources = stamina
-	friendly_resources = stamina
+	direction = -1
 	
 
-func join_game(room_id):
+func join_game(join_room_id):
+	room_id = join_room_id
 	socket.put_var(pack_data("find", room_id))
+	direction = 1
 
 func change_wager(amount):
 	thinking += amount
-	var ui_node : RichTextLabel = get_node("Control/bet amount")
+	var ui_node : RichTextLabel = get_node("play/bet amount")
 	ui_node.text = "[center]" + str(thinking)
 	
 
-func end_game():
-	pass
+func leave_matching():
+	socket.put_var(pack_data("exit", room_id))
+	socket.close()
+
+func forfeit_game():
+	socket.put_var(pack_data("exit", {"room_id": room_id, "ff_side": "host" if direction < 0 else "guest"}))
+	socket.close()
 
 # game logic
 var court_size
@@ -137,18 +141,30 @@ func _process(delta: float) -> void:
 			while socket.get_available_packet_count():
 				var incoming = socket.get_var()
 				if incoming["purpose"] == "host":
-					room_id = incoming["message"]["room_id"]
+					room_id = incoming["message"]
+					get_node("wait/flavor").text = "[center]"+str(room_id)
+					
 				if incoming["purpose"] == "match":
 					opponent_name = incoming["message"]["opponent"]
 					var setting = incoming["message"]["settings"]
 					court_size = setting["c_mag"]
 					opponent_resources = setting["stamina"]
 					friendly_resources = setting["stamina"]
+					
+					get_node("wait").visible = false
+					get_node("play").visible = true
+					
 				if incoming["purpose"] == "failure":
 					print("room not found")
+					socket.close()
+					var menu_node = load("res://menu.tscn").instantiate()
+					get_tree().root.add_child(menu_node)
+					self.queue_free()
+				
 				if incoming["purpose"] == "play":
 					opponent_wager = incoming["message"]
 					opponent_ready = true
+					
 		elif state == WebSocketPeer.STATE_CLOSING:
 			# Keep polling to achieve proper close.
 			pass
@@ -157,7 +173,9 @@ func _process(delta: float) -> void:
 			var reason = socket.get_close_reason()
 			print("WebSocket closed with code: %d, reason %s. Clean: %s" % [code, reason, code != -1])
 			socket_connected = false
-		pass
+			var menu_node = load("res://menu.tscn").instantiate()
+			get_tree().root.add_child(menu_node)
+			self.queue_free()
 		
 	if friendly_ready && opponent_ready:
 		volley()

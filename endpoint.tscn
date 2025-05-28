@@ -4,8 +4,11 @@
 
 [node name="endpoint" type="Node2D"]
 script = ExtResource("1_33tyy")
+ip_address = "127.0.0.1"
+port = 9876
 
 [node name="play" type="Control" parent="."]
+visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1152.0
@@ -126,13 +129,20 @@ offset_bottom = 40.0
 
 [node name="leave" type="Button" parent="wait"]
 layout_mode = 0
-offset_right = 8.0
-offset_bottom = 8.0
+offset_left = 520.0
+offset_top = 563.0
+offset_right = 679.0
+offset_bottom = 610.0
+text = "leave"
 
 [node name="flavor" type="RichTextLabel" parent="wait"]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = 505.0
+offset_top = 185.0
+offset_right = 744.0
+offset_bottom = 254.0
+bbcode_enabled = true
+text = "[center]other text"
 
 [connection signal="pressed" from="play/button group/+10" to="." method="change_wager" binds= [10]]
 [connection signal="pressed" from="play/button group/+5" to="." method="change_wager" binds= [5]]
@@ -141,3 +151,4 @@ offset_bottom = 40.0
 [connection signal="pressed" from="play/button group/-1" to="." method="change_wager" binds= [-1]]
 [connection signal="pressed" from="play/button group/-5" to="." method="change_wager" binds= [-5]]
 [connection signal="pressed" from="play/button group/-10" to="." method="change_wager" binds= [-10]]
+[connection signal="pressed" from="wait/leave" to="." method="leave_matching"]
