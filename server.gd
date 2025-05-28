@@ -56,30 +56,49 @@ func _process(delta: float) -> void:
 					var new_id = randi_range(1000, 9999)
 					while room_list.find_key(new_id) != null:
 						new_id = randi_range(1000, 9999)
-					room_list[new_id] = {"host": n, "settings": settings}
+					
+					room_list[new_id] = {"host": connection_list[n], "settings": settings}
 					connection_list[n]["connector"].put_var(pack_data("host", new_id))
+				
 				elif incoming["purpose"] == "find":
 					var id = incoming["message"]
 					if room_list.find_key(id) != null:
-						room_list[id]["guest"] = n
+						room_list[id]["guest"] = connection_list[n]
 						var host = room_list[id]["host"]
 						var host_name = connection_list[host]["name"]
 						var settings = room_list[id]["settings"]
 						connection_list[n]["connector"].put_var(pack_data("match", {"opponent": host_name, "settings": settings}))
 					else:
 						connection_list[n]["connector"].put_var(pack_data("failure", []))
+				
 				elif incoming["purpose"] == "play":
 					var room_id = incoming["message"]["room_id"]
-					var side = incoming["message"]["side"] # reversed, because implementation details
+					var side = incoming["message"]["side"]
 					var wager = incoming["message"]["wager"]
-					var peer = connection_list[room_list[room_id][side]]["connector"]
+					var peer = room_list[room_id]["host"]["connector"] if side == "guest" else room_list[room_id]["guest"]["connector"]
 					peer.put_var(pack_data("play", wager))
-					pass
 				
+				elif incoming["purpose"] == "exit": # this is message when host quits looking for match
+					var room_id = incoming["message"]["room_id"]
+					room_list.erase(room_id)
+				
+				elif incoming["purpose"] == "forfeit": # this guarentees there are two connections available (no i do not care about network issues)
+					var room_id = incoming["message"]["room_id"]
+					var host = room_list[room_id]["host"]
+					var guest = room_list[room_id]["guest"]
+					var ff_side = incoming["message"]["ff_side"]
+					if ff_side == "host":
+						guest.put_var(pack_data("ff", "ff_win"))
+						host.put_var(pack_data("ff", "ff_loss"))
+					else:
+						guest.put_var(pack_data("ff", "ff_loss"))
+						host.put_var(pack_data("ff", "ff_win"))
+					room_list.erase(room_id)
+					
 		elif state == WebSocketPeer.STATE_CLOSING:
 			# Keep polling to achieve proper close.
 			pass
-		elif state == WebSocketPeer.STATE_CLOSED:
+		elif state == WebSocketPeer.STATE_CLOSED: # client side always initiates close
 			var code = connection_list[n]["connector"].get_close_code()
 			var reason = connection_list[n]["connector"].get_close_reason()
 			print("WebSocket closed with code: %d, reason %s. Clean: %s" % [code, reason, code != -1])

@@ -40,7 +40,15 @@ func callout():
 
 # user control logic
 var thinking = 0
+var menu = preload("res://menu.tscn")
+
 func change_wager(amount):
+	thinking += amount
+	var ui_node : RichTextLabel = get_node("Control/bet amount")
+	ui_node.text = "[center]" + str(thinking)
+	
+
+func end_game():
 	pass
 
 # game logic
@@ -58,13 +66,13 @@ var friendly_wager
 
 var direction # -1 for host, 1 for guest
 
-func wager(amount):
-	if amount >= 0 && amount <= friendly_resources:
+func wager():
+	if thinking >= 0 && thinking <= friendly_resources:
 		var side = "host" if direction > 0 else "guest" # reversed, because implementation details
 		
-		socket.put_var(pack_data("play",{"room_id": room_id, "side": side, "wager": amount}))
+		socket.put_var(pack_data("play",{"room_id": room_id, "side": side, "wager": thinking}))
 		
-		friendly_wager = amount
+		friendly_wager = thinking
 		friendly_ready = true
 	else:
 		print("only bet what you have")
