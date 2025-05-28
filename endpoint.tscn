@@ -4,3 +4,111 @@
 
 [node name="endpoint" type="Node2D"]
 script = ExtResource("1_33tyy")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+
+[node name="button group" type="Control" parent="Control"]
+layout_mode = 1
+anchors_preset = 0
+offset_left = 345.0
+offset_top = 549.0
+offset_right = 849.0
+offset_bottom = 607.0
+
+[node name="+10" type="Button" parent="Control/button group"]
+layout_mode = 1
+offset_left = 436.0
+offset_top = 1.0
+offset_right = 494.0
+offset_bottom = 55.0
+text = "-10
+"
+
+[node name="+5" type="Button" parent="Control/button group"]
+layout_mode = 1
+offset_left = 364.0
+offset_right = 422.0
+offset_bottom = 54.0
+text = "-5"
+
+[node name="+1" type="Button" parent="Control/button group"]
+layout_mode = 1
+offset_left = 292.0
+offset_right = 350.0
+offset_bottom = 54.0
+text = "-1"
+
+[node name="wager" type="Button" parent="Control/button group"]
+layout_mode = 1
+offset_left = 219.0
+offset_top = -1.0
+offset_right = 276.0
+offset_bottom = 55.0
+text = "wager"
+
+[node name="-1" type="Button" parent="Control/button group"]
+layout_mode = 1
+offset_left = 149.0
+offset_top = -1.0
+offset_right = 207.0
+offset_bottom = 53.0
+text = "-1"
+
+[node name="-5" type="Button" parent="Control/button group"]
+layout_mode = 1
+offset_left = 74.0
+offset_top = -1.0
+offset_right = 132.0
+offset_bottom = 53.0
+text = "-5"
+
+[node name="-10" type="Button" parent="Control/button group"]
+layout_mode = 1
+offset_left = -1.0
+offset_top = -1.0
+offset_right = 57.0
+offset_bottom = 53.0
+text = "-10
+"
+
+[node name="bet amount" type="RichTextLabel" parent="Control"]
+layout_mode = 0
+offset_left = 606.0
+offset_top = 439.0
+offset_right = 647.0
+offset_bottom = 475.0
+text = "bet"
+
+[node name="resources" type="RichTextLabel" parent="Control"]
+layout_mode = 0
+offset_left = 605.0
+offset_top = 382.0
+offset_right = 645.0
+offset_bottom = 422.0
+text = "res"
+
+[node name="opp bet" type="RichTextLabel" parent="Control"]
+offset_left = 588.0
+offset_top = 93.0
+offset_right = 651.0
+offset_bottom = 126.0
+text = "oppbet"
+
+[node name="opp resources" type="RichTextLabel" parent="Control"]
+offset_left = 576.0
+offset_top = 31.0
+offset_right = 650.0
+offset_bottom = 62.0
+text = "opp res"
+
+[node name="court" type="RichTextLabel" parent="Control"]
+layout_mode = 0
+offset_left = 605.0
+offset_top = 252.0
+offset_right = 645.0
+offset_bottom = 292.0
+text = "0"

@@ -38,6 +38,11 @@ func callout():
 	return false
 	
 
+# user control logic
+var thinking = 0
+func change_wager(amount):
+	pass
+
 # game logic
 var court_size
 var opponent_resources
