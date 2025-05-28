@@ -1,0 +1,64 @@
+[gd_scene format=3 uid="uid://c80hvene1rxal"]
+
+[node name="Menu" type="Node2D"]
+
+[node name="hostfind" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="host" type="Button" parent="hostfind"]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="find" type="Button" parent="hostfind"]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="host" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="field size" type="TextEdit" parent="host"]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="stamina" type="TextEdit" parent="host"]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="start" type="Button" parent="host"]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="back" type="Button" parent="host"]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="find" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="lobby" type="TextEdit" parent="find"]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="start" type="Button" parent="find"]
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="back" type="Button" parent="find"]
+offset_right = 8.0
+offset_bottom = 8.0
