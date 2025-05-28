@@ -1,6 +1,9 @@
-[gd_scene format=3 uid="uid://c80hvene1rxal"]
+[gd_scene load_steps=2 format=3 uid="uid://c80hvene1rxal"]
+
+[ext_resource type="Script" path="res://menu.gd" id="1_2n222"]
 
 [node name="Menu" type="Node2D"]
+script = ExtResource("1_2n222")
 
 [node name="hostfind" type="Control" parent="."]
 layout_mode = 3
@@ -10,15 +13,22 @@ offset_bottom = 40.0
 
 [node name="host" type="Button" parent="hostfind"]
 layout_mode = 0
-offset_right = 8.0
-offset_bottom = 8.0
+offset_left = 153.0
+offset_top = 164.0
+offset_right = 420.0
+offset_bottom = 504.0
+text = "host"
 
 [node name="find" type="Button" parent="hostfind"]
 layout_mode = 0
-offset_right = 8.0
-offset_bottom = 8.0
+offset_left = 760.0
+offset_top = 172.0
+offset_right = 1034.0
+offset_bottom = 503.0
+text = "find"
 
 [node name="host" type="Control" parent="."]
+visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
@@ -26,39 +36,84 @@ offset_bottom = 40.0
 
 [node name="field size" type="TextEdit" parent="host"]
 layout_mode = 0
-offset_right = 8.0
-offset_bottom = 8.0
+offset_left = 510.0
+offset_top = 130.0
+offset_right = 670.0
+offset_bottom = 173.0
+placeholder_text = "field size"
 
 [node name="stamina" type="TextEdit" parent="host"]
 layout_mode = 0
-offset_right = 8.0
-offset_bottom = 8.0
+offset_left = 508.0
+offset_top = 205.0
+offset_right = 669.0
+offset_bottom = 246.0
+placeholder_text = "stamina amount"
+
+[node name="name" type="TextEdit" parent="host"]
+layout_mode = 0
+offset_left = 510.0
+offset_top = 55.0
+offset_right = 671.0
+offset_bottom = 96.0
+placeholder_text = "name"
 
 [node name="start" type="Button" parent="host"]
 layout_mode = 0
-offset_right = 8.0
-offset_bottom = 8.0
+offset_left = 637.0
+offset_top = 373.0
+offset_right = 753.0
+offset_bottom = 443.0
+text = "start"
 
 [node name="back" type="Button" parent="host"]
 layout_mode = 0
-offset_right = 8.0
-offset_bottom = 8.0
+offset_left = 421.0
+offset_top = 373.0
+offset_right = 522.0
+offset_bottom = 444.0
+text = "back"
 
 [node name="find" type="Control" parent="."]
+visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
+[node name="name" type="TextEdit" parent="find"]
+offset_left = 534.0
+offset_top = 130.0
+offset_right = 695.0
+offset_bottom = 171.0
+placeholder_text = "name"
+
 [node name="lobby" type="TextEdit" parent="find"]
 layout_mode = 0
-offset_right = 8.0
-offset_bottom = 8.0
+offset_left = 530.0
+offset_top = 194.0
+offset_right = 701.0
+offset_bottom = 236.0
+placeholder_text = "lobby id"
+context_menu_enabled = false
 
 [node name="start" type="Button" parent="find"]
-offset_right = 8.0
-offset_bottom = 8.0
+offset_left = 640.0
+offset_top = 457.0
+offset_right = 800.0
+offset_bottom = 550.0
+text = "start"
 
 [node name="back" type="Button" parent="find"]
-offset_right = 8.0
-offset_bottom = 8.0
+offset_left = 409.0
+offset_top = 459.0
+offset_right = 556.0
+offset_bottom = 548.0
+text = "back"
+
+[connection signal="pressed" from="hostfind/host" to="." method="pick_host"]
+[connection signal="pressed" from="hostfind/find" to="." method="pick_find"]
+[connection signal="pressed" from="host/start" to="." method="host_start"]
+[connection signal="pressed" from="host/back" to="." method="pick_back"]
+[connection signal="pressed" from="find/start" to="." method="find_start"]
+[connection signal="pressed" from="find/back" to="." method="pick_back"]

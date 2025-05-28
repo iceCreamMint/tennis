@@ -21,14 +21,16 @@ func pack_data(purpose, message):
 # 								<- 							"play", wager
 # "close", room_id 				->
 
-func callout():
+func callout(name):
+	friendly_name = name
 	print("connecting to server")
+	socket.connect_to_url("ws://127.0.0.1:9876")
 	var state
 	while state != WebSocketPeer.STATE_CLOSED:
 		socket.poll()
 		state = socket.get_ready_state()
 		if state == WebSocketPeer.STATE_OPEN:
-			socket.put_var(pack_data("id", friendly_name))
+			socket.put_var(pack_data("id", name))
 			while socket.get_available_packet_count():
 				var listen = socket.get_var()
 				if listen["purpose"] == "ack":
@@ -41,6 +43,17 @@ func callout():
 # user control logic
 var thinking = 0
 var menu = preload("res://menu.tscn")
+
+func settings(c_mag, stamina):
+	socket.put_var(pack_data("host", {"c_mag": c_mag, "stamina": stamina}))
+	
+	court_size = c_mag
+	opponent_resources = stamina
+	friendly_resources = stamina
+	
+
+func join_game(room_id):
+	socket.put_var(pack_data("find", room_id))
 
 func change_wager(amount):
 	thinking += amount
@@ -108,14 +121,6 @@ func volley():
 			print("narrow loss")
 		else:
 			print("draw")
-	
-
-func settings(c_mag, stamina):
-	socket.put_var(pack_data("host", {"c_mag": c_mag, "stamina": stamina}))
-	
-	court_size = c_mag
-	opponent_resources = stamina
-	friendly_resources = stamina
 	
 
 # Called when the node enters the scene tree for the first time.

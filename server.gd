@@ -44,6 +44,7 @@ func _process(delta: float) -> void:
 		var ear = tserver.take_connection()
 		var new_ws_connection = WebSocketPeer.new()
 		new_ws_connection.accept_stream(ear)
+		handshake(new_ws_connection)
 		
 	for n in len(connection_list):
 		connection_list[n]["connector"].poll()
