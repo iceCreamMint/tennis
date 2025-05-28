@@ -4,7 +4,7 @@
 
 [node name="endpoint" type="Node2D"]
 script = ExtResource("1_33tyy")
-ip_address = "127.0.0.1"
+ip_address = "108.35.160.24"
 port = 9876
 
 [node name="play" type="Control" parent="."]

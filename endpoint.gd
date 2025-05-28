@@ -57,9 +57,9 @@ func join_game(join_room_id):
 
 func change_wager(amount):
 	thinking += amount
-	if amount > friendly_resources:
+	if thinking > friendly_resources:
 		thinking = friendly_resources
-	elif amount < 0:
+	elif thinking < 0:
 		thinking = 0
 	var ui_node : RichTextLabel = get_node("play/bet amount")
 	ui_node.text = "[center]" + str(thinking)
