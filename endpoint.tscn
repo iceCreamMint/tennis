@@ -8,7 +8,6 @@ ip_address = "127.0.0.1"
 port = 9876
 
 [node name="play" type="Control" parent="."]
-visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1152.0
@@ -85,7 +84,6 @@ offset_top = 439.0
 offset_right = 647.0
 offset_bottom = 475.0
 bbcode_enabled = true
-text = "[center]bet"
 
 [node name="resources" type="RichTextLabel" parent="play"]
 layout_mode = 0
@@ -94,7 +92,6 @@ offset_top = 382.0
 offset_right = 645.0
 offset_bottom = 422.0
 bbcode_enabled = true
-text = "[center]res"
 
 [node name="opp bet" type="RichTextLabel" parent="play"]
 offset_left = 578.0
@@ -102,7 +99,6 @@ offset_top = 93.0
 offset_right = 661.0
 offset_bottom = 126.0
 bbcode_enabled = true
-text = "[center]oppbet"
 
 [node name="opp resources" type="RichTextLabel" parent="play"]
 offset_left = 582.0
@@ -110,18 +106,75 @@ offset_top = 32.0
 offset_right = 656.0
 offset_bottom = 63.0
 bbcode_enabled = true
-text = "[center]opp res"
 
 [node name="court" type="RichTextLabel" parent="play"]
 layout_mode = 0
-offset_left = 605.0
-offset_top = 252.0
-offset_right = 645.0
-offset_bottom = 292.0
+offset_left = 603.0
+offset_top = 262.0
+offset_right = 643.0
+offset_bottom = 302.0
 bbcode_enabled = true
 text = "[center]0"
 
+[node name="fixed ui" type="Control" parent="play"]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="play/fixed ui"]
+layout_mode = 0
+offset_left = 372.0
+offset_top = 31.0
+offset_right = 551.0
+offset_bottom = 86.0
+text = "opponent resources:
+
+"
+
+[node name="RichTextLabel2" type="RichTextLabel" parent="play/fixed ui"]
+offset_left = 370.0
+offset_top = 93.0
+offset_right = 549.0
+offset_bottom = 148.0
+text = "opponent wager:
+
+"
+
+[node name="RichTextLabel3" type="RichTextLabel" parent="play/fixed ui"]
+offset_left = 374.0
+offset_top = 383.0
+offset_right = 553.0
+offset_bottom = 438.0
+text = "resources:
+
+"
+
+[node name="RichTextLabel4" type="RichTextLabel" parent="play/fixed ui"]
+offset_left = 372.0
+offset_top = 445.0
+offset_right = 551.0
+offset_bottom = 500.0
+text = "wager:
+
+"
+
+[node name="RichTextLabel5" type="RichTextLabel" parent="play/fixed ui"]
+layout_mode = 0
+offset_left = 371.0
+offset_top = 258.0
+offset_right = 522.0
+offset_bottom = 291.0
+text = "court segment"
+
+[node name="announcement" type="RichTextLabel" parent="play"]
+layout_mode = 0
+offset_left = 751.0
+offset_top = 250.0
+offset_right = 1053.0
+offset_bottom = 322.0
+
 [node name="wait" type="Control" parent="."]
+visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0

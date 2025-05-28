@@ -48,69 +48,69 @@ func _process(delta: float) -> void:
 		handshake(new_ws_connection)
 		
 	for n in len(connection_list):
-		connection_list[n]["connector"].poll()
-		var state = connection_list[n]["connector"].get_ready_state()
-		if state == WebSocketPeer.STATE_OPEN:
-			while connection_list[n]["connector"].get_available_packet_count():
-				var incoming = connection_list[n]["connector"].get_var()
-				if incoming["purpose"] == "host":
-					var settings = incoming["message"]
-					var new_id = randi_range(1000, 9999)
-					while room_list.find_key(new_id) != null:
-						new_id = randi_range(1000, 9999)
-					print("creating new room %d" % new_id)
+		if n < len(connection_list):
+			connection_list[n]["connector"].poll()
+			var state = connection_list[n]["connector"].get_ready_state()
+			if state == WebSocketPeer.STATE_OPEN:
+				while connection_list[n]["connector"].get_available_packet_count():
+					var incoming = connection_list[n]["connector"].get_var()
+					if incoming["purpose"] == "host":
+						var settings = incoming["message"]
+						var new_id = randi_range(1000, 9999)
+						while room_list.find_key(new_id) != null:
+							new_id = randi_range(1000, 9999)
+						print("creating new room %d" % new_id)
+						
+						room_list[new_id] = {"host": connection_list[n], "settings": settings}
+						connection_list[n]["connector"].put_var(pack_data("host", new_id))
 					
-					room_list[new_id] = {"host": connection_list[n], "settings": settings}
-					connection_list[n]["connector"].put_var(pack_data("host", new_id))
-				
-				elif incoming["purpose"] == "find":
-					var id = incoming["message"]
-					print("looking for room %d" % id)
-					if room_list.has(id):
-						print("room found")
-						room_list[id]["guest"] = connection_list[n]
-						var host = room_list[id]["host"]
-						var host_name = host["name"]
-						var settings = room_list[id]["settings"]
-						connection_list[n]["connector"].put_var(pack_data("match", {"opponent": host_name, "settings": settings}))
-						host["connector"].put_var(pack_data("match", {"opponent": host_name, "settings": settings}))
-					else:
-						print("room not found")
-						connection_list[n]["connector"].put_var(pack_data("failure", []))
-				
-				elif incoming["purpose"] == "play":
-					var room_id = incoming["message"]["room_id"]
-					var side = incoming["message"]["side"]
-					var wager = incoming["message"]["wager"]
-					var peer = room_list[room_id]["host"]["connector"] if side == "guest" else room_list[room_id]["guest"]["connector"]
-					peer.put_var(pack_data("play", wager))
-				
-				elif incoming["purpose"] == "exit": # this is message when host quits looking for match
-					var room_id = incoming["message"]
-					print("removing room %d" % room_id)
-					room_list.erase(room_id)
-				
-				elif incoming["purpose"] == "forfeit": # this guarentees there are two connections available (no i do not care about network issues)
-					var room_id = incoming["message"]["room_id"]
-					print("removing room %d" % room_id)
-					var host = room_list[room_id]["host"]
-					var guest = room_list[room_id]["guest"]
-					var ff_side = incoming["message"]["ff_side"]
-					if ff_side == "host":
-						guest.put_var(pack_data("ff", "ff_win"))
-						host.put_var(pack_data("ff", "ff_loss"))
-					else:
-						guest.put_var(pack_data("ff", "ff_loss"))
-						host.put_var(pack_data("ff", "ff_win"))
-					room_list.erase(room_id)
+					elif incoming["purpose"] == "find":
+						var id = incoming["message"]
+						print("looking for room %d" % id)
+						if room_list.has(id):
+							print("room found")
+							room_list[id]["guest"] = connection_list[n]
+							var host = room_list[id]["host"]
+							var host_name = host["name"]
+							var settings = room_list[id]["settings"]
+							connection_list[n]["connector"].put_var(pack_data("match", {"opponent": host_name, "settings": settings}))
+							host["connector"].put_var(pack_data("match", {"opponent": host_name, "settings": settings}))
+						else:
+							print("room not found")
+							connection_list[n]["connector"].put_var(pack_data("failure", []))
 					
-		elif state == WebSocketPeer.STATE_CLOSING:
-			# Keep polling to achieve proper close.
-			pass
-		elif state == WebSocketPeer.STATE_CLOSED: # client side always initiates close
-			var code = connection_list[n]["connector"].get_close_code()
-			var reason = connection_list[n]["connector"].get_close_reason()
-			print("WebSocket closed with code: %d, reason %s. Clean: %s" % [code, reason, code != -1])
-			connection_list.remove_at(n)
-		pass
+					elif incoming["purpose"] == "play":
+						var room_id = incoming["message"]["room_id"]
+						var side = incoming["message"]["side"]
+						var wager = incoming["message"]["wager"]
+						var peer = room_list[room_id]["host"]["connector"] if side == "guest" else room_list[room_id]["guest"]["connector"]
+						peer.put_var(pack_data("play", wager))
+					
+					elif incoming["purpose"] == "exit":
+						var room_id = incoming["message"]
+						print("removing room %d" % room_id)
+						room_list.erase(room_id)
+					
+					elif incoming["purpose"] == "forfeit": # this guarentees there are two connections available (no i do not care about network issues)
+						var room_id = incoming["message"]["room_id"]
+						print("removing room %d" % room_id)
+						var host = room_list[room_id]["host"]
+						var guest = room_list[room_id]["guest"]
+						var ff_side = incoming["message"]["ff_side"]
+						if ff_side == "host":
+							guest.put_var(pack_data("ff", "ff_win"))
+							host.put_var(pack_data("ff", "ff_loss"))
+						else:
+							guest.put_var(pack_data("ff", "ff_loss"))
+							host.put_var(pack_data("ff", "ff_win"))
+						room_list.erase(room_id)
+					
+			elif state == WebSocketPeer.STATE_CLOSING:
+				# Keep polling to achieve proper close.
+				pass
+			elif state == WebSocketPeer.STATE_CLOSED: # client side always initiates close
+				var code = connection_list[n]["connector"].get_close_code()
+				var reason = connection_list[n]["connector"].get_close_reason()
+				print("WebSocket closed with code: %d, reason %s. Clean: %s" % [code, reason, code != -1])
+				connection_list.remove_at(n)
 	
